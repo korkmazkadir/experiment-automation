@@ -20,10 +20,12 @@ if [ -d "./output/" ]; then
 fi
 
 # Compiles the project
-make
+if [ -f Makefile ]; then
+    make
+fi
 
 # Runs nodes
-printf "${registery_address}\n${number_of_nodes}\n" | bash ./create-network-with-registery-trickle.sh
+printf "${registery_address}\n${number_of_nodes}\n" | ./create-network-with-registery-trickle.sh
 
 # Exits
 exit
