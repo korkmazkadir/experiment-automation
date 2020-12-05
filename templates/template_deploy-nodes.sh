@@ -5,7 +5,8 @@ registery_address="${1}"
 number_of_nodes="${2}"
 
 # Exports public address
-export PUBLIC_ADDRESS="${3}"
+# This gets the IP address of the  machine on nuc cluster
+export PUBLIC_ADDRESS=$(hostname -I)
 
 # Text color
 RED='\033[0;31m'
