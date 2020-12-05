@@ -10,7 +10,7 @@ export PUBLIC_ADDRESS=$(hostname -I)
 
 # Text color
 RED='\033[0;31m'
-YBG='\e[43m'
+LM='\e[95m'
 NC='\033[0m'
 
 # Changes directory
@@ -26,7 +26,7 @@ if [ -f Makefile ]; then
     make
 fi
 
->&2 echo -e "${YBG}Adding 100ms delay using TC rule${NC}"
+>&2 echo -e "${LM}Adding 100ms delay using TC rule${NC}"
 sudo tc qdisc add dev eno1 root netem delay 100ms
 
 # Runs nodes

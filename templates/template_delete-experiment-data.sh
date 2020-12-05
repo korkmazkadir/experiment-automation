@@ -3,13 +3,13 @@
 
 # Text color
 LG='\e[92m'
-YBG='\e[43m'
+LM='\e[95m'
 NC='\033[0m'
 
 # Changes directory
 cd ~/Git/algorand-go-implementation/
 
->&2 echo -e "${YBG}Deleting TC rules${NC}"
+>&2 echo -e "${LM}Deleting tc rules${NC}"
 sudo tc qdisc del dev eno1 root
 
 # Delete all experiment data and removes executable
