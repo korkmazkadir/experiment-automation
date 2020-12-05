@@ -47,9 +47,6 @@ wait_for_processes
 
 echo "--------------------- Collecting Stat Files ------------------------"
 
-# Clear pid list
-ssh_pids=()
-
 # Collect stat files from machines
 for machine in "${machines[@]}"
 do
@@ -63,11 +60,6 @@ do
     ip_address=${tokens[1]}
 
     
-    scp "${machine}:~/${ip_address}.stat" "./${folder_name}/" &
-
-    # Adds the pid of last ssh process to the list
-    ssh_pids=(${ssh_pids[@]} $!)
+    scp "${machine}:~/${ip_address}.stat" "./${folder_name}/"
 
 done
-
-wait_for_processes

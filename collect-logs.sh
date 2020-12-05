@@ -15,6 +15,16 @@ fi
 
 echo "--------------------- Zipping log Files ------------------------"
 
+# Keeps pids of ssh processes to wait later
+ssh_pids=()
+
+function wait_for_processes {
+  # Wait to finish all previous processes
+  for pid in "${ssh_pids[@]}"; do
+      wait $pid
+  done
+}
+
 # Creates log files on machines
 for machine in "${machines[@]}"
 do
@@ -26,9 +36,14 @@ do
     user_name=${tokens[0]}
     ip_address=${tokens[1]}
 
-    sed -e "s/\${1}/${user_name}/" -e "s/\${2}/${ip_address}/" ./templates/template_gether-logs.sh | ssh -t "${machine}" > /dev/null
+    sed -e "s/\${1}/${user_name}/" -e "s/\${2}/${ip_address}/" ./templates/template_gether-logs.sh | ssh -t "${machine}" > /dev/null &
+
+    # Adds the pid of last ssh process to the list
+    ssh_pids=(${ssh_pids[@]} $!)
 
 done
+
+wait_for_processes
 
 echo "--------------------- Collecting zip Files ------------------------"
 
