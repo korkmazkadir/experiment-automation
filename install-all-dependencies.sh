@@ -29,11 +29,16 @@ do
     echo "==> Uploading go binaries on machine: ${machine}"
 
     scp "${1}" "${machine}:~/"
+    
+    # Adds the pid of last ssh process to the list
+    ssh_pids=(${ssh_pids[@]} $!)
 
 done
 
+wait_for_processes
 
 echo "--------------------- Installing Dependencies ------------------------"
+ssh_pids=()
 
 # Installing dependencies on machines
 for machine in "${machines[@]}"
