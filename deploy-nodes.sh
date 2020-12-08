@@ -41,11 +41,8 @@ do
     IFS='@' read -ra tokens <<< "${machine}"
     ip_address=${tokens[1]}
 
-    sed -e "s/\${1}/${registery_ip_address}/" -e "s/\${2}/${number_of_nodes}/" -e "s/\${3}/${ip_address}/" ./templates/template_deploy-nodes.sh | ssh -t "${machine}" > /dev/null &
+    sed -e "s/\${1}/${registery_ip_address}/" -e "s/\${2}/${number_of_nodes}/" -e "s/\${3}/${ip_address}/" ./templates/template_deploy-nodes.sh | ssh -t "${machine}" > /dev/null
 
-    # Adds the pid of last ssh process to the list
-    ssh_pids=(${ssh_pids[@]} $!)
 
 done
 
-wait_for_processes

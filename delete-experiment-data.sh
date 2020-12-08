@@ -21,11 +21,6 @@ do
 
     echo "==> Deleting experiment data on machine: ${machine}"
 
-    cat  ./templates/template_delete-experiment-data.sh | ssh -t "${machine}" > /dev/null &
-
-    # Adds the pid of last ssh process to the list
-    ssh_pids=(${ssh_pids[@]} $!)
+    cat  ./templates/template_delete-experiment-data.sh | ssh -t "${machine}" > /dev/null
 
 done
-
-wait_for_processes

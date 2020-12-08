@@ -36,10 +36,10 @@ do
     user_name=${tokens[0]}
     ip_address=${tokens[1]}
 
-    sed -e "s/\${1}/${user_name}/" -e "s/\${2}/${ip_address}/" ./templates/template_create-statistics.sh | ssh -t "${machine}" > /dev/null &
+    sed -e "s/\${1}/${user_name}/" -e "s/\${2}/${ip_address}/" ./templates/template_create-statistics.sh | ssh -t "${machine}" > /dev/null
    
     # Adds the pid of last ssh process to the list
-    ssh_pids=(${ssh_pids[@]} $!)
+    # ssh_pids=(${ssh_pids[@]} $!)
 
 done
 

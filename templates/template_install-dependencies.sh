@@ -27,7 +27,7 @@ sudo apt-get install -y zip
 sudo apt-get install -y unzip
 
 >&2 echo -e "${LG}Removing old artifacts...${NC}"
-sudo -rm ./Git
+sudo rm -rf ./Git
 
 # Creates Git Folder
 >&2 echo -e "${LG}Unzipping experiment-artifacts...${NC}"
@@ -37,7 +37,7 @@ unzip experiment-artifacts.zip
 unzip distribution_amd64_linux.zip
 
 >&2 echo -e "${LG}Deletes unnecessary files from the home directory${NC}"
-rm *.zip
+rm -f *.zip
 
 # Ends ssh session
 exit

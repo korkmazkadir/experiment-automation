@@ -31,11 +31,11 @@ do
     scp "${1}" "${machine}:~/"
     
     # Adds the pid of last ssh process to the list
-    ssh_pids=(${ssh_pids[@]} $!)
+    #ssh_pids=(${ssh_pids[@]} $!)
 
 done
 
-wait_for_processes
+#wait_for_processes
 
 echo "--------------------- Installing Dependencies ------------------------"
 ssh_pids=()
@@ -45,11 +45,8 @@ for machine in "${machines[@]}"
 do
     echo "==> Installing dependencies on machine: ${machine}"
 
-    cat ./templates/template_install-dependencies.sh | ssh -t "${machine}" > /dev/null &
+    cat ./templates/template_install-dependencies.sh | ssh -t "${machine}" > /dev/null
 
-    # Adds the pid of last ssh process to the list
-    ssh_pids=(${ssh_pids[@]} $!)
 
 done
 
-wait_for_processes

@@ -26,8 +26,9 @@ if [ -f Makefile ]; then
     make
 fi
 
->&2 echo -e "${LM}Adding 50ms delay using TC rule: netem delay 50ms limit 32Mb${NC}"
-sudo tc qdisc add dev eno1 root netem delay 50ms limit 32Mb
+>&2 echo -e "${LM}NO tc rule${NC}"
+#>&2 echo -e "${LM}Adding 50ms delay using TC rule: netem delay 50ms limit 32Mb${NC}"
+#sudo tc qdisc add dev eno1 root netem delay 50ms limit 32Mb
 
 
 # Runs nodes
