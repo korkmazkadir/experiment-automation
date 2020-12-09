@@ -1,11 +1,11 @@
 {
-	"NodeCount": 1000,
+	"NodeCount": 500,
 	"BAStar": {
 		"UserMoney": 10,
 		"ThresholdProposer": 26,
-		"TSmallStep": 400,
+		"TSmallStep": 200,
 		"TBigStep": 0.68,
-		"TBigFinal": 2000,
+		"TBigFinal": 1000,
 		"TSmallFinal": 0.74,
 		"LamdaPriority": 5,
 		"LamdaBlock": 60,

@@ -23,7 +23,7 @@ sudo apt install -y trickle
 >&2 echo -e "${LG}installing zip...${NC}"
 sudo apt-get install -y zip
 
->&2 echo -e "${LG}installing zip...${NC}"
+>&2 echo -e "${LG}installing unzip...${NC}"
 sudo apt-get install -y unzip
 
 >&2 echo -e "${LG}Removing old artifacts...${NC}"
