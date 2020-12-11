@@ -3,6 +3,9 @@
 # Imports machines.sh
 source machines.sh
 
+# Imports tc rules
+source tc_rules.sh
+
 # The first argument is the path of the config file
 if [ "$1" == "" ]; then
     echo "You should provide the number of node per machine!"
@@ -41,7 +44,14 @@ do
     IFS='@' read -ra tokens <<< "${machine}"
     ip_address=${tokens[1]}
 
-    sed -e "s/\${1}/${registery_ip_address}/" -e "s/\${2}/${number_of_nodes}/" -e "s/\${3}/${ip_address}/" ./templates/template_deploy-nodes.sh | ssh -t "${machine}" > /dev/null
+    IFS='.' read -ra tokens <<< "${ip_address}"
+    host_name=${tokens[0]}
+
+    tcRules="tc_rules_${host_name}"
+
+    #echo -e ${!tcRules}
+
+    sed -e "s/\${1}/${registery_ip_address}/" -e "s/\${2}/${number_of_nodes}/" -e "s/\${3}/${!tcRules}/" ./templates/template_deploy-nodes.sh | ssh -t "${machine}" > /dev/null
 
 
 done

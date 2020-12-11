@@ -33,6 +33,9 @@ sudo rm -rf ./Git
 >&2 echo -e "${LG}Unzipping experiment-artifacts...${NC}"
 unzip experiment-artifacts.zip
 
+#>&2 echo -e "${LG}Installs tcconfig_0.26.0_amd64.deb...${NC}"
+#sudo dpkg -i tcconfig_0.26.0_amd64.deb
+
 >&2 echo -e "${LG}Unzipping speed test...${NC}"
 unzip distribution_amd64_linux.zip
 

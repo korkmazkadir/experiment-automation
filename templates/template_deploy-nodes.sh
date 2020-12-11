@@ -26,13 +26,23 @@ if [ -f Makefile ]; then
     make
 fi
 
->&2 echo -e "${LM}NO tc rule${NC}"
+#>&2 echo -e "${LM}NO tc rule${NC}"
+
 #>&2 echo -e "${LM}Adding 50ms delay using TC rule: netem delay 50ms limit 32Mb${NC}"
 #sudo tc qdisc add dev eno1 root netem delay 50ms limit 32Mb
 
+#>&2 echo -e "${LM}Adding 50ms delay using TC rule: netem delay 50ms limit 1000000${NC}"
+#sudo tc qdisc add dev eno1 root netem delay 50ms limit 1000000
+
+
+>&2 echo -e "${LM}Seeting tc rules using tcset${NC}"
+${3}
 
 # Runs nodes
-printf "${registery_address}\n${number_of_nodes}\n" | ./create-network-with-registery-trickle.sh
+#printf "${registery_address}\n${number_of_nodes}\n" | ./create-network-with-registery-trickle.sh
+
+>&2 echo -e "${LM}Deploying nodes without trickle${NC}"
+printf "${registery_address}\n${number_of_nodes}\n" | ./create-network-with-registery.sh
 
 # Exits
 exit
