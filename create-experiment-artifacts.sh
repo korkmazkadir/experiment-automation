@@ -8,7 +8,7 @@ rm -rf temp_1225456
 mkdir temp_1225456
 cd temp_1225456
 
-wget https://github.com/thombashi/tcconfig/releases/download/v0.26.0/tcconfig_0.26.0_amd64.deb
+#wget https://github.com/thombashi/tcconfig/releases/download/v0.26.0/tcconfig_0.26.0_amd64.deb
 
 mkdir Git
 
@@ -27,7 +27,7 @@ cd -
 #----------
 
 cp ~/Git/algorand-go-implementation/algorand-go-implementation ./
-cp ~/Git/algorand-go-implementation/create-network-with-registery-trickle.sh ./
+cp ~/Git/algorand-go-implementation/create-network-with-registery-cgroup.sh ./
 cp ~/Git/algorand-go-implementation/create-network-with-registery.sh ./
 cp ~/Git/algorand-go-implementation/kill-processes.sh ./
 

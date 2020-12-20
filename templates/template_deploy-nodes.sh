@@ -38,11 +38,9 @@ fi
 >&2 echo -e "${LM}Seeting tc rules using tcset${NC}"
 ${3}
 
-# Runs nodes
-#printf "${registery_address}\n${number_of_nodes}\n" | ./create-network-with-registery-trickle.sh
-
->&2 echo -e "${LM}Deploying nodes without trickle${NC}"
+#>&2 echo -e "${LM}Deploying nodes...${NC}"
 printf "${registery_address}\n${number_of_nodes}\n" | ./create-network-with-registery.sh
+
 
 # Exits
 exit

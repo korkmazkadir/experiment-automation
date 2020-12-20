@@ -17,8 +17,11 @@ sudo tc qdisc del dev eno1 root
 >&2 echo -e "${LG}updating...${NC}"
 sudo apt-get -y update
 
->&2 echo -e "${LG}installing trickle...${NC}"
-sudo apt install -y trickle
+#>&2 echo -e "${LG}installing trickle...${NC}"
+#sudo apt install -y trickle
+
+>&2 echo -e "${LG}installing cgroup-tools...${NC}"
+sudo apt install -y cgroup-tools
 
 >&2 echo -e "${LG}installing zip...${NC}"
 sudo apt-get install -y zip
