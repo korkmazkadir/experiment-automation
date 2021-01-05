@@ -1,21 +1,21 @@
 {
-	"NodeCount": 500,
+	"NodeCount": 450,
 	"BAStar": {
 		"UserMoney": 10,
 		"ThresholdProposer": 26,
-		"TSmallStep": 200,
+		"TSmallStep": 180,
 		"TBigStep": 0.68,
-		"TBigFinal": 1000,
+		"TBigFinal": 900,
 		"TSmallFinal": 0.74,
 		"LamdaPriority": 5,
 		"LamdaBlock": 60,
 		"LamdaStep": 20,
 		"LamdaStepVar": 5,
-		"ConcurrencyConstant": 7
+		"ConcurrencyConstant": 1
 	},
 	"Blockchain": {
 		"BlockPayloadSize": 1000000,
-		"StopOnRound": 20
+		"StopOnRound": 100
 	},
 	"Network": {
 		"GossipNodeMessageBufferSize": 100,

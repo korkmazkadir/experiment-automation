@@ -35,12 +35,15 @@ fi
 #sudo tc qdisc add dev eno1 root netem delay 50ms limit 1000000
 
 
->&2 echo -e "${LM}Seeting tc rules using tcset${NC}"
-${3}
+#>&2 echo -e "${LM}Seeting tc rules using tcset${NC}"
+#${}
 
 #>&2 echo -e "${LM}Deploying nodes...${NC}"
-printf "${registery_address}\n${number_of_nodes}\n" | ./create-network-with-registery.sh
+#printf "${registery_address}\n${number_of_nodes}\n" | ./create-network-with-registery.sh
 
+
+>&2 echo -e "${LM}Deploying nodes using cgroups...${NC}"
+printf "${registery_address}\n${number_of_nodes}\n" | ./create-network-with-registery-cgroup.sh
 
 # Exits
 exit
