@@ -10,7 +10,7 @@
 #cd "/home/${1}/Git/algorand-go-implementation"
 
 # Collects stats in a .stat file
-tail --silent -n +1  ~/Git/algorand-go-implementation/output/*.log | grep "\[stats\]\|\[messages\]" > "${2}.stat"
+tail --silent -n +1  ~/Git/algorand-go-implementation/output/*.log | grep "\[stats\]\|\[messages\]\|\[upload-stat\]" > "${2}.stat"
 
 # ends the current ssh session
 exit
