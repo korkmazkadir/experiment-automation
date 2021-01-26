@@ -45,7 +45,7 @@ for machine in "${machines[@]}"
 do
     echo "==> Installing dependencies on machine: ${machine}"
 
-    cat ./templates/template_install-dependencies.sh | ssh -t "${machine}" > /dev/null
+    cat ./templates/template_install-dependencies.sh | ssh -T "${machine}" > /dev/null
 
 
 done

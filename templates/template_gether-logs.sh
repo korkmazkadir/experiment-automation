@@ -4,7 +4,7 @@
 # Second argument is the ip address of the host
 
 #cd ~/Git/algorand-go-implementation/output/
-rm "./${2}_logs.zip"
+rm -f "./${2}_logs.zip"
 
 # Collects logs in a zip file
 zip -j "./${2}_logs.zip" ./Git/algorand-go-implementation/output/*

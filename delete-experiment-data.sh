@@ -21,6 +21,6 @@ do
 
     echo "==> Deleting experiment data on machine: ${machine}"
 
-    cat  ./templates/template_delete-experiment-data.sh | ssh -t "${machine}" > /dev/null
+    cat  ./templates/template_delete-experiment-data.sh | ssh -T "${machine}" > /dev/null
 
 done
