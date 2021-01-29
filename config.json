@@ -11,11 +11,11 @@
 		"LamdaBlock": 60,
 		"LamdaStep": 20,
 		"LamdaStepVar": 5,
-		"ConcurrencyConstant": 3
+		"ConcurrencyConstant": 2
 	},
 	"Blockchain": {
 		"BlockPayloadSize": 1000000,
-		"StopOnRound": 20
+		"StopOnRound": 50
 	},
 	"Network": {
 		"GossipNodeMessageBufferSize": 100,

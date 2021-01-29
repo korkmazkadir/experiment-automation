@@ -51,7 +51,7 @@ do
 
     #echo -e ${!tcRules}
 
-    sed -e "s/\${1}/${registery_ip_address}/" -e "s/\${2}/${number_of_nodes}/" -e "s/\${3}/${!tcRules}/" ./templates/template_deploy-nodes.sh | ssh -t "${machine}" > /dev/null
+    sed -e "s/\${1}/${registery_ip_address}/" -e "s/\${2}/${number_of_nodes}/" -e "s/\${3}/${!tcRules}/" ./templates/template_deploy-nodes.sh | ssh -tt "${machine}" > /dev/null
 
 
 done
