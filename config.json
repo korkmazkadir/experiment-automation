@@ -11,15 +11,17 @@
 		"LamdaBlock": 60,
 		"LamdaStep": 20,
 		"LamdaStepVar": 5,
-		"ConcurrencyConstant": 2
+		"ConcurrencyConstant": 1
 	},
 	"Blockchain": {
-		"BlockPayloadSize": 1000000,
-		"StopOnRound": 50
+		"BlockPayloadSize": 4000000,
+		"StopOnRound": 30
 	},
 	"Network": {
 		"GossipNodeMessageBufferSize": 100,
-		"PeerCount": 4
+		"PeerCount": 4,
+		"FanOut":6,
+		"BigMessageMutex": true
 	},
 	"Logger": {
 		"EnableAgreementLoging": true,
