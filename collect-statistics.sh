@@ -63,3 +63,5 @@ do
     scp "${machine}:~/${ip_address}.stat" "./${folder_name}/"
 
 done
+
+echo "stat folder name is ${date_string}"
