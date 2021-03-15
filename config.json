@@ -1,21 +1,21 @@
 {
 	"NodeCount": 450,
 	"BAStar": {
-		"UserMoney": 10,
+		"UserMoney": 1000,
 		"ThresholdProposer": 26,
-		"TSmallStep": 180,
-		"TBigStep": 0.68,
-		"TBigFinal": 900,
-		"TSmallFinal": 0.74,
+		"TSmallStep": 2000,
+		"TBigStep": 0.685,
+		"TSmallFinal": 10000,
+		"TBigFinal": 0.74,
 		"LamdaPriority": 5,
 		"LamdaBlock": 60,
 		"LamdaStep": 60,
 		"LamdaStepVar": 5,
-		"MacroBlockSize": 16000000,
-		"ConcurrencyConstant": 8
+		"MacroBlockSize": 1000000,
+		"ConcurrencyConstant": 2
 	},
 	"Blockchain": {
-		"StopOnRound": 11
+		"StopOnRound": 5
 	},
 	"Network": {
 		"GossipNodeMessageBufferSize": 100,
@@ -31,7 +31,7 @@
 	},
 	"Validation":{
 		"ValidateBlock": true,
-		"ValidateVote":	true
+		"ValidateVote":	false
 	},
 	"Host":{
 		"LimitBandwidth": true,

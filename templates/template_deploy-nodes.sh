@@ -16,6 +16,10 @@ NC='\033[0m'
 # Changes directory
 cd ~/Git/algorand-go-implementation/
 
+
+##### Remove this
+rm -rf "./output"
+
 if [ -d "./output/" ]; then
     >&2 echo -e "${RED}Machine contains experiment data. You should clean it before deploying new nodes!${NC}"
     exit 1

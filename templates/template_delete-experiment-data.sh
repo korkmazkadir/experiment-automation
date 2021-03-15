@@ -24,5 +24,9 @@ else
     rm -rf output
 fi
 
+>&2 echo -e "${LM}Deleting PID file${NC}"
+cat /dev/null > process.pids
+
+
 #Kills all processess
 kill -9 -1

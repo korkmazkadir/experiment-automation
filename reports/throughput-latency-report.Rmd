@@ -1,0 +1,111 @@
+---
+title: "Throughput and Latency Plots"
+output: pdf_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+library(dplyr)
+
+# Get folder path which contains stat files for all experiments
+filePath <- "/Users/kadir/Desktop/algorand_plusplus-experiments-2/experiments.stat"
+
+raw_stat_df <- read.table(filePath, sep="\t", header=FALSE)
+
+colnames(raw_stat_df)[1] = "Type"
+colnames(raw_stat_df)[2] = "Node"
+colnames(raw_stat_df)[3] = "MacroBlockSize"
+colnames(raw_stat_df)[4] = "ConcurrencyConstant"
+colnames(raw_stat_df)[5] = "Round"
+colnames(raw_stat_df)[6] = "BlockPropagation"
+colnames(raw_stat_df)[7] = "BAWithOutFinalStep"
+colnames(raw_stat_df)[8] = "BAWithFinalStep"
+colnames(raw_stat_df)[9] = "ConsensusType"
+colnames(raw_stat_df)[10] = "BlockType"
+colnames(raw_stat_df)[11] = "BlockHash"
+colnames(raw_stat_df)[12] = "PayloadSize"
+colnames(raw_stat_df)[13] = "ElectedAsLeader"
+
+#remove rounds which are smaller or equal to 5 or bigger than  15
+filtered_df <- filter(raw_stat_df, Round > 5 & Round <= 15)
+
+```
+
+
+
+# Macro Block Size vs Throughput
+
+```{r throughput, echo=FALSE}
+
+
+grouped_throughput_df <- filtered_df %>% 
+                          group_by(MacroBlockSize, ConcurrencyConstant, Node ) %>%
+                          mutate( Throughput = (sum(PayloadSize) / 1000)  / sum(BAWithFinalStep) ) %>%
+                          mutate( Count = n())
+                          #mutate( AppendedData = sum(PayloadSize) ) %>%
+                          #mutate( ElapsedTime = sum(BAWithFinalStep) )
+                          
+
+count_before <- nrow(grouped_throughput_df)
+
+# Removes node data with less than 10 rounds
+grouped_throughput_df <- filter(grouped_throughput_df, Count == 10)
+
+number_of_removed <- count_before -  nrow(grouped_throughput_df)
+
+throughput_plot_df <- grouped_throughput_df %>% 
+                  group_by(MacroBlockSize, ConcurrencyConstant ) %>%
+                  summarise(
+                    Min = min(Throughput),
+                    Q1 = quantile(Throughput, 0.25),
+                    Median = median(Throughput),
+                    Mean = mean(Throughput),
+                    Q3 = quantile(Throughput, 0.75),
+                    Max = max(Throughput)
+                  )
+
+#print(tbl_df(throughput_plot_df), n=50)
+
+library(ggplot2)
+ggplot(throughput_plot_df, aes(x=MacroBlockSize, y=Median, group=ConcurrencyConstant)) +
+  geom_point(position=position_jitter(h=0,w=0.2)) +
+  geom_line(aes( linetype=factor(ConcurrencyConstant), color=factor(ConcurrencyConstant) ))+
+  geom_point() +
+  labs( x = "Macro Block Size (MB)", y = "Median Throughput (KB/Second)", color = "CC", linetype="CC" )+
+  theme(legend.position="top",legend.box="vertical", legend.margin=margin())+
+  scale_x_continuous(labels = as.character(throughput_plot_df$MacroBlockSize), breaks = throughput_plot_df$MacroBlockSize)
+
+```
+
+Number of removed data rows is **`r number_of_removed`**
+
+
+\newpage
+# Macro Block Size vs Latency
+```{r latency, echo=FALSE}
+
+
+latency_plot_df <- filtered_df %>% 
+                  group_by(MacroBlockSize, ConcurrencyConstant ) %>%
+                  summarise(
+                    Min = min(BAWithFinalStep),
+                    Q1 = quantile(BAWithFinalStep, 0.25),
+                    Median = median(BAWithFinalStep),
+                    Mean = mean(BAWithFinalStep),
+                    Q3 = quantile(BAWithFinalStep, 0.75),
+                    Max = max(BAWithFinalStep)
+                  )
+
+ggplot(latency_plot_df, aes(x=MacroBlockSize, y=Median, group=ConcurrencyConstant)) +
+  geom_point(position=position_jitter(h=0,w=0.2)) +
+  geom_line(aes( linetype=factor(ConcurrencyConstant), color=factor(ConcurrencyConstant) ))+
+  geom_point() +
+  labs( x = "Macro Block Size (MB)", y = "Median Latency (Second)", color = "CC", linetype="CC" )+
+  theme(legend.position="top",legend.box="vertical", legend.margin=margin()) +
+  scale_x_continuous(labels = as.character(latency_plot_df$MacroBlockSize), breaks = latency_plot_df$MacroBlockSize)
+
+```
+
+
+
+
+

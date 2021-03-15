@@ -8,6 +8,12 @@ source machines.sh
 date_string=$(date '+%Y-%m-%d_%H:%M:%S')
 folder_name="output/stats/${date_string}"
 
+# a folder path provided as output folder
+if [ ! -z "$1" ]
+  then
+    folder_name="$1"
+fi
+
 
 if [ ! -d "./${folder_name}" ]; then
   mkdir -p "./${folder_name}"

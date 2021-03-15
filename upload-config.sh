@@ -26,6 +26,7 @@ do
 
     echo "=> Uploading the config file to machine: ${machine}"
 
-    scp "${1}" "${machine}:~/Git/algorand-go-implementation/"
+    # uploads and renames the file
+    scp "${1}" "${machine}:~/Git/algorand-go-implementation/config.json"
 
 done

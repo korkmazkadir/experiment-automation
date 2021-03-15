@@ -1,0 +1,362 @@
+---
+title: "Experiment Report"
+author: "Kadir Korkmaz"
+date: "`r commandArgs(trailingOnly=T)[3]`"
+output:
+  pdf_document: default
+  fig_width: 6 
+  fig_height: 2 
+---
+
+
+```{r setup, include=FALSE}
+
+# How to run r file from commandline by providing arguments
+# R -e "rmarkdown::render('experiment-report-1.rmd', output_file='hello.pdf')" --args /Users/kadir/Git/experiment-automation/output/stats/2021-03-08_07:00:00 /Users/kadir/Git/experiment-automation/config.json 15.04.1989
+
+# source: https://stackoverflow.com/questions/31463143/pass-parameters-from-command-line-into-r-markdown-document
+
+# First argument the path of the folder which contains the stat files
+# Second argument is the path of config file
+# Third argument a timestamp to show in the cover of the report
+
+# The report will renamed according to Macroblock size and concurrency constant comming from config file
+cmd_args <- commandArgs(trailingOnly=T)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+
+#install.packages("data.table", repos = "https://cran.rstudio.com")
+library(data.table)
+
+# Folder which contains *.stat files
+dataFolderPath <- cmd_args[1]
+# The path of config file
+path_of_config <- cmd_args[2]
+
+# Lists all stat files
+list_of_files <- list.files(path = dataFolderPath, recursive = TRUE, pattern = "\\.stat$",  full.names = TRUE)
+
+
+# Read all the files and create a FileName column to store filenames
+DT <- rbindlist(sapply(list_of_files, fread, simplify = FALSE),
+                use.names = FALSE, idcol = "FileName")
+
+
+#Data set contains to kinds of data, we are organizing data
+
+experiment_df <- as.data.frame(DT)
+
+colnames(experiment_df)[1] = "FileName"
+colnames(experiment_df)[2] = "Date"
+colnames(experiment_df)[3] = "Time"
+colnames(experiment_df)[4] = "Data"
+
+experiment_df$FileName <- basename(experiment_df$FileName)
+
+stats_df <- experiment_df %>% filter(str_detect(Data, 'stats'))
+stats_sp <- separate(data = stats_df, col = Data, into = c(
+              "Type",
+              "NodeID",
+              "MacroBlockSize",
+              "CC",
+              "Round",
+              "BlockPropagation", 
+              "BAWithOutFinalStep",
+              "BAWithFinalStep",
+              "ConsensusType",
+              "BlockType",
+              "BlockHash",
+              "PayloadSize",
+              "ElectedAsLeader"
+              ), convert = TRUE, sep = "\\\t")
+
+stats_sp$FileName <- stats_df$FileName
+
+message_df <- experiment_df %>% filter(str_detect(Data, 'messages'))
+message_df <- separate(data = message_df, col = Data, into = c("Type","Round","BlockCount", "ProposalCount","VoteCount"), convert = TRUE, sep = "\\\t")
+
+
+upload_df <- experiment_df %>% filter(str_detect(Data, 'upload-stat'))
+upload_df <- separate(data = upload_df, col = Data, into = c("Type","Receiver","MessageLength", "ElapsedTime"), convert = TRUE, sep = "\\\t")
+
+experiment_df <- stats_sp[, c("FileName", "Type", "NodeID", "MacroBlockSize",  "CC",  "Round", "BlockPropagation", "BAWithOutFinalStep", "BAWithFinalStep","ConsensusType", "BlockType","BlockHash", "PayloadSize", "ElectedAsLeader")]
+
+number_of_machines <- nrow( experiment_df %>% group_by(FileName) %>% summarise(count = n()) )
+
+
+#install.packages("readr")
+library(readr)
+#install.packages("jsonlite")
+library(jsonlite)
+
+
+path_of_config_file=
+
+node_condiguration <- read_file(path_of_config)
+nodeo_config_df <- fromJSON(node_condiguration)
+
+
+```
+
+
+# Experiment Configuration
+
+
+
+Advanced algorand with concurrency constant **`r nodeo_config_df$BAStar$ConcurrencyConstant` **
+
+Number of nodes is **`r nodeo_config_df$NodeCount` **
+
+Bandwidth limit per process using Trickle: **20 Mbps using tc and cgroups**
+
+tc Delay on outgoing channel: **50 ms delay (RTT 100ms)**
+
+\newpage
+## Node Configuration
+
+```{r, echo=FALSE}
+
+prettify(node_condiguration, indent = 4)
+
+
+```
+
+
+\newpage
+# Sanity Check
+
+```{r, echo=FALSE, fig.width=8}
+
+library(knitr)
+
+sanity_df <- experiment_df %>% 
+              group_by(FileName) %>%
+              summarise(
+                count = n(),
+                mean_bp = mean(BlockPropagation, na.rm=TRUE),
+                mean_ba_wo_final = mean(BAWithOutFinalStep, na.rm=TRUE),
+                mean_ba_w_final = mean(BAWithFinalStep, na.rm=TRUE),
+                distinct_hash=n_distinct(BlockHash),
+                max_round = max(Round)
+              )
+
+kable(sanity_df)
+
+block_stats_df <- experiment_df %>% 
+                  group_by(Round) %>%
+                    summarise(
+                      payload_size = mean(PayloadSize, na.rm=TRUE),
+                      payload_size_mb = mean(PayloadSize, na.rm=TRUE) / 1000000
+                    )
+
+
+library(ggplot2)
+
+ggplot(block_stats_df, aes(x=Round, y=payload_size)) + geom_point(stat = "identity")
+
+
+```
+
+The number of rows in data set is **`r nrow(experiment_df)`**
+
+Maximum round number is **`r max(experiment_df$Round)`**
+
+Appended payload size is is **`r sum(block_stats_df$payload_size_mb)`** MB
+
+\newpage
+# Overal Results
+
+```{r, echo=FALSE}
+
+boxplot(experiment_df[7:9],
+  main = "",
+  xlab = "Step",
+  ylab = "Seconds",
+  col = "orange",
+  border = "brown",
+  horizontal = FALSE,
+  notch = FALSE
+)
+
+
+
+kable(caption="Summaries", summary( experiment_df[7:9]))
+
+
+```
+
+
+
+
+\newpage
+# Block Propagation Statistics
+
+```{r, echo=FALSE}
+
+hist(experiment_df$BlockPropagation, main="", xlab = "")
+
+```
+
+```{r, echo=FALSE}
+
+boxplot(experiment_df$BlockPropagation,
+  main = "",
+  xlab = "Seconds",
+  ylab = "Block Propagation",
+  col = "orange",
+  border = "brown",
+  horizontal = TRUE,
+  notch = FALSE
+)
+
+```
+
+\newpage
+# BA Elapsed Time Without Final Step Statistics
+
+
+```{r, echo=FALSE}
+
+hist(experiment_df$BAWithOutFinalStep, main="", xlab = "")
+
+```
+
+```{r, echo=FALSE}
+
+boxplot(experiment_df$BAWithOutFinalStep,
+  main = "",
+  xlab = "Seconds",
+  ylab = "BA Without Final Step",
+  col = "orange",
+  border = "brown",
+  horizontal = TRUE,
+  notch = FALSE
+)
+
+```
+
+
+
+\newpage
+# BA Elapsed Time With Final Step Statistics
+
+```{r, echo=FALSE}
+
+hist(experiment_df$BAWithFinalStep, main="", xlab = "")
+
+```
+
+```{r, echo=FALSE}
+
+boxplot(experiment_df$BAWithFinalStep,
+  main = "",
+  xlab = "Seconds",
+  ylab = "BA With Final Step",
+  col = "orange",
+  border = "brown",
+  horizontal = TRUE,
+  notch = FALSE
+)
+
+```
+
+
+\newpage
+# Forwarded Message Counts Per Round
+
+```{r, echo=FALSE, fig.height=3}
+
+boxplot(message_df$BlockCount,
+  main = " ",
+  xlab = "",
+  ylab = "Block Count",
+  col = "orange",
+  border = "brown",
+  horizontal = TRUE,
+  notch = FALSE
+)
+
+boxplot(message_df$ProposalCount,
+  main = " ",
+  xlab = "",
+  ylab = "Proposal Count",
+  col = "orange",
+  border = "brown",
+  horizontal = TRUE,
+  notch = FALSE
+)
+
+
+boxplot(message_df$VoteCount,
+  main = " ",
+  xlab = "",
+  ylab = "Vote Count",
+  col = "orange",
+  border = "brown",
+  horizontal = TRUE,
+  notch = FALSE
+)
+
+
+```
+
+
+
+\newpage
+# Block Upload Stats
+```{r, echo=FALSE, fig.height=3}
+
+hist(upload_df$ElapsedTime, main="", xlab = "", breaks = 20 )
+
+
+summary( upload_df$ElapsedTime)
+
+boxplot(upload_df$ElapsedTime,
+  main = " ",
+  xlab = "",
+  ylab = "",
+  col = "orange",
+  border = "brown",
+  horizontal = TRUE,
+  notch = FALSE
+)
+
+summary( upload_df$MessageLength)
+
+
+grouped <- upload_df %>% group_by(FileName) %>% summarise(Count = n(), Min = min(ElapsedTime), Mean=mean(ElapsedTime), Max=max(ElapsedTime))
+
+kable(grouped)
+
+sum(grouped$Count)
+
+
+```
+
+# Leader count per round
+```{r, echo=FALSE}
+
+leaderCountsPerRound <- experiment_df %>% 
+                        group_by(Round) %>%
+                        summarise( LeaderCount = sum(ElectedAsLeader == "true"))
+
+hist(leaderCountsPerRound$LeaderCount, labels = TRUE, breaks = 10)
+
+summary(leaderCountsPerRound$LeaderCount)
+
+
+macroBlockSizePerRound<- experiment_df %>% distinct(Round, .keep_all= TRUE) %>% 
+                        group_by(PayloadSize) %>%
+                        summarise( Count = n())
+
+head(macroBlockSizePerRound)
+
+
+
+```
+
+
+
+

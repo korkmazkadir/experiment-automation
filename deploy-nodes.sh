@@ -51,8 +51,21 @@ do
 
     #echo -e ${!tcRules}
 
-    sed -e "s/\${1}/${registery_ip_address}/" -e "s/\${2}/${number_of_nodes}/" -e "s/\${3}/${!tcRules}/" ./templates/template_deploy-nodes.sh | ssh -tt "${machine}" > /dev/null
+    ecode=1
+    while [ $ecode -ne 0 ]
+    do
 
+        sed -e "s/\${1}/${registery_ip_address}/" -e "s/\${2}/${number_of_nodes}/" -e "s/\${3}/${!tcRules}/" ./templates/template_deploy-nodes.sh | ssh -tt "${machine}" > /dev/null
+        ecode=$?
+        echo "Exit code is ${ecode}"
+
+        if [ "$ecode" -ne 0 ]; 
+        then
+            echo "It will retry 10 seconds later."
+            sleep 10
+        fi
+
+    done
 
 done
 
