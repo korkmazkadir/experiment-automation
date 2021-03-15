@@ -6,6 +6,13 @@ then
     exit -1
 fi
 
+if [[ -z "${SLACK_BOT_TOKEN}" ]]; then
+    echo "SLACK_BOT_TOKEN environment variable is not set!"
+    exit -1
+fi
+
+
+
 
 # Define a timestamp function
 func_timestamp() {
@@ -174,6 +181,44 @@ func_create_experiment_report(){
 
     ./create-experiment-report.sh "${stats}" "${current_config}" "${output_folder}" "${report_name}"
 
+    echo "${report_name}.pdf"
+}
+
+func_create_throughput_latency_report(){
+    local current_pwd=$(pwd)
+    local output_folder="${current_pwd}/batch/conducted_experiments"
+    local stats_file="${output_folder}/experiments.stat"
+    local report_name="throughput_and_latency_report"
+
+    ./create-throughput-latency-report.sh "${stats_file}" "${output_folder}" "${report_name}"
+
+    echo "${output_folder}/${report_name}.pdf"
+}
+
+
+func_send_message(){
+    local message=$1
+    # should be absolute
+    local file_path=$2
+    
+    formatted_message="*[Batch:${batch_version}, Macroblock:${macroblock_size}, CC:${concurrency_constant}]* - _${message}_"
+
+    if [ -z "${file_path}" ]; 
+    then
+        result=$(cd slack; ./send_message.py "${formatted_message}" )
+    else
+        result=$(cd slack; ./upload_file.py "${file_path}" "${formatted_message}" )
+    fi
+
+    
+    echo "${result}"
+}
+
+
+func_upload_file(){
+    local file_path=$1
+    result=$(cd slack; .send_message.py "${formatted_message}" )
+    echo "${result}"    
 }
 
 
@@ -207,17 +252,28 @@ do
     # Gets the current experiment
     current_experiment=$(func_get_current_experiment)
 
+    #Read from current experiment config file
+    macroblock_size=$( jq .BAStar.MacroBlockSize $current_experiment )
+    #Read from current experiment config file
+    concurrency_constant=$( jq .BAStar.ConcurrencyConstant $current_experiment )
+
+
     # 0) Observer log experiment started
     echo "******** Experiment started: ${current_experiment} "
+    func_send_message "Experiment started" ""
+    
 
     # 1) Start registery service
     echo "******** Starting the registery service"
     ./start-registery-service.sh
 
     # 2) Upload Config files
+    func_send_message "Uploading config files" ""
     ./upload-config.sh "${current_experiment}"
 
     # 3) Deploy nodes
+    func_send_message "Deploying nodes" ""
+
     number_of_machines=${#machines[@]}
     total_number_of_nodes=$( jq .NodeCount $current_experiment )
     echo "******** Deploying ${total_number_of_nodes} nodes. The number of machines is ${number_of_machines}"
@@ -226,24 +282,31 @@ do
 
     # 4) Wait until the end of the experiment
     echo "******** Waiting for the end of the experiment"
+    func_send_message "Waiting for the end of the experiment" ""
     func_wait_until_end_of_experiment
 
     # 5) Collect stats
     echo "******** Collecting stats"
+    func_send_message "Collecting stats" ""
     mkdir ./batch/current_experiment/stats
     ./collect-statistics.sh "./batch/current_experiment/stats"
 
     # 6) Collect-logs
     echo "******** Collecting logs"
+    func_send_message "Collecting logs" ""
     mkdir ./batch/current_experiment/logs
     ./collect-logs.sh "./batch/current_experiment/logs"
 
     # 7) Create experiment report
     echo "******** Creating experiment report"
-    func_create_experiment_report "$current_experiment"
-
+    func_send_message "Creating experiment report" ""
+    experiment_report_name=$(func_create_experiment_report "$current_experiment")
+    
     # 8) Upload experiment report to the channel 
     echo "******** Pulishes the experiment report on slack channel"
+    #### Get path of the report
+    report_path=$(readlink -m "./batch/current_experiment/${experiment_report_name}")
+    func_send_message "The experiment report ready" "${report_path}"
 
     # 9) Move data of the experiment under the conducted experiments folder
     echo "********  Moving experiment data under conducted experiments folder"
@@ -251,13 +314,23 @@ do
 
     # 10) Create throughput latency report
     echo "Creating the throughput and latency reports"
+    func_send_message "Creating the throughput and latency report" ""
+    ./merge-stats.sh "./batch/conducted_experiments/"
+    throughput_latency_report_file=$(func_create_throughput_latency_report)
+
 
     # 11) Upload throughput report to the channel
     echo "******** Pulishes the throughput and latency report on slack channel"
+    report_path=$(readlink -m "./batch/conducted_experiments/throughput_and_latency_report.pdf")
+    func_send_message "The throughput and latency report ready" "${report_path}"
 
     # 12) Delete experiment data on machine
     echo "******** Deleting experiment data on machines"
+    func_send_message "Deleting experiment data" ""
     source delete-experiment-data.sh
+
+    #13) Remainign number of experiments
+    func_send_message "Remaining number of experiments is ${experiment_count}" ""
 
 
     # Reads the next experiment to conduct

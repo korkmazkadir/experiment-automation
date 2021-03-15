@@ -7,10 +7,11 @@ then
 fi
 
 
-macroblock_sizes=(512 1000 2000)
-concurrency_constants=(1 2 3 4)
+#macroblock_sizes=(512 1000 2000 4000 6000)
+macroblock_sizes=(8000 10000)
+concurrency_constants=(1 2 4 6 8)
 
-file_index=1
+file_index=26
 for macroblock_size in "${macroblock_sizes[@]}"
 do
     macroblock_size=$(($macroblock_size * 1000))

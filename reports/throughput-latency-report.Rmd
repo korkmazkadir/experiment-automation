@@ -1,13 +1,19 @@
 ---
 title: "Throughput and Latency Plots"
-output: pdf_document
+date: "`r commandArgs(trailingOnly=T)[2]`"
+output:
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE, echo=FALSE}
 library(dplyr)
 
+# The first argument is the stat file
+# The second argument is timestamp
+cmd_args <- commandArgs(trailingOnly=T)
+
 # Get folder path which contains stat files for all experiments
-filePath <- "/Users/kadir/Desktop/algorand_plusplus-experiments-2/experiments.stat"
+filePath <- cmd_args[1]
 
 raw_stat_df <- read.table(filePath, sep="\t", header=FALSE)
 

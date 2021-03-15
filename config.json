@@ -15,7 +15,7 @@
 		"ConcurrencyConstant": 2
 	},
 	"Blockchain": {
-		"StopOnRound": 5
+		"StopOnRound": 19
 	},
 	"Network": {
 		"GossipNodeMessageBufferSize": 100,
