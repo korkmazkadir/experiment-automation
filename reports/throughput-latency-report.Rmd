@@ -34,6 +34,8 @@ colnames(raw_stat_df)[13] = "ElectedAsLeader"
 #remove rounds which are smaller or equal to 5 or bigger than  15
 filtered_df <- filter(raw_stat_df, Round > 5 & Round <= 15)
 
+filtered_df$MacroBlockSize <- filtered_df$MacroBlockSize / 1000000
+
 ```
 
 
@@ -73,7 +75,7 @@ throughput_plot_df <- grouped_throughput_df %>%
 
 library(ggplot2)
 ggplot(throughput_plot_df, aes(x=MacroBlockSize, y=Median, group=ConcurrencyConstant)) +
-  geom_point(position=position_jitter(h=0,w=0.2)) +
+  #geom_point(position=position_jitter(h=0,w=0.2)) +
   geom_line(aes( linetype=factor(ConcurrencyConstant), color=factor(ConcurrencyConstant) ))+
   geom_point() +
   labs( x = "Macro Block Size (MB)", y = "Median Throughput (KB/Second)", color = "CC", linetype="CC" )+
@@ -102,7 +104,7 @@ latency_plot_df <- filtered_df %>%
                   )
 
 ggplot(latency_plot_df, aes(x=MacroBlockSize, y=Median, group=ConcurrencyConstant)) +
-  geom_point(position=position_jitter(h=0,w=0.2)) +
+  #geom_point(position=position_jitter(h=0,w=0.2)) +
   geom_line(aes( linetype=factor(ConcurrencyConstant), color=factor(ConcurrencyConstant) ))+
   geom_point() +
   labs( x = "Macro Block Size (MB)", y = "Median Latency (Second)", color = "CC", linetype="CC" )+
