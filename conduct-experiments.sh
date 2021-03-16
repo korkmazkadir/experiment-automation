@@ -170,14 +170,11 @@ func_create_experiment_report(){
     local concurrency_constant=$( jq .BAStar.ConcurrencyConstant $current_config )
 
     local output_folder="${current_pwd}/batch/current_experiment"
-    local current_config="${current_pwd}/batch/current_experiment/$(basename -- $current_config)"
+    local config_file_name="$(basename -- $current_config)"
+    local current_config="${current_pwd}/batch/current_experiment/${config_file_name}"
     local stats="${output_folder}/stats"
 
     local report_name="report-${macroblock_size}_CC${concurrency_constant}"
-
-    echo  "${stats}"
-    echo  "${current_config}"
-    echo "${output_folder}"
 
     ./create-experiment-report.sh "${stats}" "${current_config}" "${output_folder}" "${report_name}"
 
@@ -330,6 +327,7 @@ do
     source delete-experiment-data.sh
 
     #13) Remainign number of experiments
+    experiment_count=$(func_count_experiments)
     func_send_message "Remaining number of experiments is ${experiment_count}" ""
 
 
