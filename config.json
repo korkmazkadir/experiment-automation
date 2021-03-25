@@ -1,5 +1,5 @@
 {
-	"NodeCount": 450,
+	"NodeCount": 486,
 	"BAStar": {
 		"UserMoney": 1000,
 		"ThresholdProposer": 26,
@@ -8,20 +8,20 @@
 		"TSmallFinal": 10000,
 		"TBigFinal": 0.74,
 		"LamdaPriority": 5,
-		"LamdaBlock": 60,
+		"LamdaBlock": 120,
 		"LamdaStep": 60,
 		"LamdaStepVar": 5,
 		"MacroBlockSize": 1000000,
 		"ConcurrencyConstant": 2
 	},
 	"Blockchain": {
-		"StopOnRound": 19
+		"StopOnRound": 18
 	},
 	"Network": {
 		"GossipNodeMessageBufferSize": 100,
 		"PeerCount": 4,
 		"FanOut":8,
-		"BigMessageMutex": true
+		"BigMessageMutex": false
 	},
 	"Logger": {
 		"EnableAgreementLoging": true,

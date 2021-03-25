@@ -178,6 +178,8 @@ func_create_experiment_report(){
 
     ./create-experiment-report.sh "${stats}" "${current_config}" "${output_folder}" "${report_name}"
 
+    experiment_report_name="${report_name}"
+
     echo "${report_name}.pdf"
 }
 
@@ -297,12 +299,14 @@ do
     # 7) Create experiment report
     echo "******** Creating experiment report"
     func_send_message "Creating experiment report" ""
-    experiment_report_name=$(func_create_experiment_report "$current_experiment")
+    func_create_experiment_report "$current_experiment"
     
     # 8) Upload experiment report to the channel 
     echo "******** Pulishes the experiment report on slack channel"
     #### Get path of the report
-    report_path=$(readlink -m "./batch/current_experiment/${experiment_report_name}")
+    #func_create_experiment_report creates global variable experiment_report_name
+    report_path=$(readlink -m "./batch/current_experiment/${experiment_report_name}.pdf")
+    echo "----------------->REPORT PATH IS ${report_path}"
     func_send_message "The experiment report ready" "${report_path}"
 
     # 9) Move data of the experiment under the conducted experiments folder

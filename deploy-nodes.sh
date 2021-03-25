@@ -49,13 +49,16 @@ do
 
     tcRules="tc_rules_${host_name}"
 
+    bash_v=$(readlink -f $(which sh))
+    echo "Bash version: ${bash_v}"
+
     #echo -e ${!tcRules}
 
     ecode=1
     while [ $ecode -ne 0 ]
     do
 
-        sed -e "s/\${1}/${registery_ip_address}/" -e "s/\${2}/${number_of_nodes}/" -e "s/\${3}/${!tcRules}/" ./templates/template_deploy-nodes.sh | ssh -tt "${machine}" > /dev/null
+        sed -e "s/\${1}/${registery_ip_address}/" -e "s/\${2}/${number_of_nodes}/" ./templates/template_deploy-nodes.sh | ssh -tt "${machine}" > /dev/null
         ecode=$?
         echo "Exit code is ${ecode}"
 

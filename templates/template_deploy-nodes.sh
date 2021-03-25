@@ -8,6 +8,9 @@ number_of_nodes="${2}"
 # This gets the IP address of the  machine on nuc cluster
 export PUBLIC_ADDRESS=$(hostname -I)
 
+#this works on G5K
+#export PUBLIC_ADDRESS=$(hostname -i)
+
 # Text color
 RED='\033[0;31m'
 LM='\e[95m'
