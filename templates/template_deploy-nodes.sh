@@ -6,10 +6,16 @@ number_of_nodes="${2}"
 
 # Exports public address
 # This gets the IP address of the  machine on nuc cluster
-export PUBLIC_ADDRESS=$(hostname -I)
+#export PUBLIC_ADDRESS=$(hostname -I)
+
+#Openfile soft limit increased
+ulimit -Sn 1000000
+
+# Sets number of cores per process
+export GOMAXPROCS=4
 
 #this works on G5K
-#export PUBLIC_ADDRESS=$(hostname -i)
+export PUBLIC_ADDRESS=$(hostname -i)
 
 # Text color
 RED='\033[0;31m'
@@ -50,7 +56,7 @@ fi
 
 
 >&2 echo -e "${LM}Deploying nodes using cgroups...${NC}"
-printf "${registery_address}\n${number_of_nodes}\n" | ./create-network-with-registery-cgroup.sh
+printf "${registery_address}\n${number_of_nodes}\n" | ./create-network-with-registery-cgroup.sh 
 
 # Exits
 exit
