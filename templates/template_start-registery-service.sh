@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#Openfile soft limit increased
+ulimit -Sn 1000000
+
 # Kills the registery service
 kill -9 `cat ~/registery.pid`
 
