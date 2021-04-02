@@ -63,6 +63,12 @@ func_get_current_experiment(){
 
     shopt -s nullglob
     for config_file in ./batch/current_experiment/*.json; do
+
+        #creates id field
+        experiment_id=$(date +%s)
+        jq --arg a "$experiment_id" '.BAStar.ID =($a|tonumber)' "$config_file" > temp && mv temp "$config_file"
+        >&2 echo "Experiment ID is ${experiment_id}"
+
         echo "$config_file"
         break
     done
@@ -147,7 +153,10 @@ func_move_experiment_data(){
     #Read from current experiment config file
     concurrency_constant=$( jq .BAStar.ConcurrencyConstant $current )
 
-    experiment_folder="./batch/conducted_experiments/${macroblock_size}/${macroblock_size}_CC${concurrency_constant}/"
+    #Read from current experiment config file
+    threshold_proposer=$( jq .BAStar.ThresholdProposer $current )
+
+    experiment_folder="./batch/conducted_experiments/${macroblock_size}/${macroblock_size}_CC${concurrency_constant}_TP${threshold_proposer}/"
 
     # creates the folder inconducted experiments folder
     mkdir -p "${experiment_folder}"

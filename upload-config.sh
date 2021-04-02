@@ -3,6 +3,9 @@
 # Imports machines.sh
 source machines.sh
 
+# imports retry
+source retry.sh
+
 # The first argument is the path of the config file
 if [ "$1" == "" ]; then
     echo "You should provide the path of the config.json file!"
@@ -26,7 +29,6 @@ do
 
     echo "=> Uploading the config file to machine: ${machine}"
 
-    # uploads and renames the file
-    scp "${1}" "${machine}:~/Git/algorand-go-implementation/config.json"
+    retry scp "${1}" "${machine}:~/Git/algorand-go-implementation/config.json"
 
 done

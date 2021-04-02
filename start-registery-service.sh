@@ -3,6 +3,8 @@
 # Imports machines.sh
 source machines.sh
 
+source retry.sh
+
 echo "--------------------- Starting Registery Service ------------------------"
 
 machine=${machines[0]}
@@ -13,5 +15,5 @@ ip_address=${tokens[1]}
 
 echo "==> Starting registery service on the first machine: ${ip_address}"
 
-cat ./templates/template_start-registery-service.sh | ssh -t "${machine}" > /dev/null
+retry cat ./templates/template_start-registery-service.sh | ssh -t "${machine}" > /dev/null
 

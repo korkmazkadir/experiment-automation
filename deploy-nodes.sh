@@ -6,6 +6,11 @@ source machines.sh
 # Imports tc rules
 source tc_rules.sh
 
+#imports retry function
+source retry.sh
+
+
+
 # The first argument is the path of the config file
 if [ "$1" == "" ]; then
     echo "You should provide the number of node per machine!"
@@ -52,23 +57,8 @@ do
     bash_v=$(readlink -f $(which sh))
     echo "Bash version: ${bash_v}"
 
-    #echo -e ${!tcRules}
+    retry sed -e "s/\${1}/${registery_ip_address}/" -e "s/\${2}/${number_of_nodes}/" ./templates/template_deploy-nodes.sh | ssh -tt "${machine}" > /dev/null
 
-    ecode=1
-    while [ $ecode -ne 0 ]
-    do
-
-        sed -e "s/\${1}/${registery_ip_address}/" -e "s/\${2}/${number_of_nodes}/" ./templates/template_deploy-nodes.sh | ssh -tt "${machine}" > /dev/null
-        ecode=$?
-        echo "Exit code is ${ecode}"
-
-        if [ "$ecode" -ne 0 ]; 
-        then
-            echo "It will retry 10 seconds later."
-            sleep 10
-        fi
-
-    done
 
 done
 

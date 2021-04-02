@@ -3,6 +3,8 @@
 # Imports machines.sh
 source machines.sh
 
+
+
 echo "--------------------- Deleting Experiment Data ------------------------"
 
 # Keeps pids of ssh processes to wait later

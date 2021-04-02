@@ -2,7 +2,7 @@
 	"NodeCount": 486,
 	"BAStar": {
 		"UserMoney": 1000,
-		"ThresholdProposer": 26,
+		"ThresholdProposer": 100,
 		"TSmallStep": 2000,
 		"TBigStep": 0.685,
 		"TSmallFinal": 10000,
@@ -12,7 +12,8 @@
 		"LamdaStep": 60,
 		"LamdaStepVar": 5,
 		"MacroBlockSize": 1000000,
-		"ConcurrencyConstant": 2
+		"ConcurrencyConstant": 2,
+		"ID":1
 	},
 	"Blockchain": {
 		"StopOnRound": 18
