@@ -43,10 +43,22 @@ ssh_pids=()
 # Installing dependencies on machines
 for machine in "${machines[@]}"
 do
-    echo "==> Installing dependencies on machine: ${machine}"
+    echo "===> Installing dependencies on machine: ${machine}"
 
-    cat ./templates/template_install-dependencies.sh | ssh -T "${machine}" > /dev/null
+    ecode=1
 
+    while [ "$ecode" != 0 ]
+    do 
+        cat ./templates/template_install-dependencies.sh | ssh -T "${machine}" > /dev/null
+        ecode=$?
+
+        if (( $ecode != 0 ))
+        then
+            echo "An error occured, error code is ${ecode}, it will retry after sleeping 2 seconds"
+            sleep 2
+        fi
+        
+    done
 
 done
 
