@@ -23,6 +23,13 @@ LM='\e[95m'
 NC='\033[0m'
 
 # Changes directory
+cd ~/Git/keyvaluestore/
+pkill cmd
+# this kills key value store also
+./start-key-value-store.sh
+
+
+# Changes directory
 cd ~/Git/algorand-go-implementation/
 
 

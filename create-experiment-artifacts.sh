@@ -18,6 +18,20 @@ mkdir algorand-go-implementation
 
 mkdir coordinator
 
+mkdir keyvaluestore
+
+#----------
+
+cd keyvaluestore
+
+cp ~/Git/simple-key-value-store/cmd/cmd ./
+cp ~/Git/simple-key-value-store/cmd/start-key-value-store.sh ./
+cp ~/Git/simple-key-value-store/cmd/stop-key-value-store.sh ./
+
+cd ..
+
+#----------
+
 cd algorand-go-implementation
 
 #----------
