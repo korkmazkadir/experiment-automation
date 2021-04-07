@@ -29,4 +29,4 @@ cat /dev/null > process.pids
 
 
 #Kills all processess
-kill -9 -1
+#kill -9 -1

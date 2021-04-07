@@ -3,6 +3,11 @@
 # Imports machines.sh
 source machines.sh
 
+# Text color
+RED='\033[0;31m'
+LM='\e[95m'
+NC='\033[0m'
+
 # The first argument is the path of the algorand-go-implementation binary
 if [ "$1" == "" ]; then
     echo "You should provide the path of experiment-artifacts.zip file!"
@@ -28,7 +33,20 @@ do
 
     echo "==> Uploading go binaries on machine: ${machine}"
 
-    scp "${1}" "${machine}:~/"
+    ecode=1
+    while [ $ecode -ne 0 ]
+    do
+
+        scp "${1}" "${machine}:~/"
+        ecode=$?
+
+        if [ "$ecode" -ne 0 ]; 
+        then
+            echo -e "${RED}It will retry 10 seconds later.${NC}"
+            sleep 10
+        fi
+
+    done
     
     # Adds the pid of last ssh process to the list
     #ssh_pids=(${ssh_pids[@]} $!)

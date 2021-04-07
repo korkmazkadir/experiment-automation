@@ -3,6 +3,11 @@
 # Imports machines.sh
 source machines.sh
 
+RED='\033[0;31m'
+LM='\e[95m'
+NC='\033[0m'
+
+
 # Folder name is created using a formatted date time string
 # This folder is used to store collected stat files from machines
 date_string=$(date '+%Y-%m-%d_%H:%M:%S')
@@ -43,7 +48,22 @@ do
     user_name=${tokens[0]}
     ip_address=${tokens[1]}
 
-    sed -e "s/\${1}/${user_name}/" -e "s/\${2}/${ip_address}/" ./templates/template_gether-logs.sh | ssh -t "${machine}" > /dev/null
+
+    ecode=1
+    while [ $ecode -ne 0 ]
+    do
+
+        sed -e "s/\${1}/${user_name}/" -e "s/\${2}/${ip_address}/" ./templates/template_gether-logs.sh | ssh -t "${machine}" > /dev/null
+        ecode=$?
+
+        if [ "$ecode" -ne 0 ]; 
+        then
+            echo -e "${RED}It will retry 10 seconds later.${NC}"
+            sleep 10
+        fi
+
+    done
+
 
     # Adds the pid of last ssh process to the list
     #ssh_pids=(${ssh_pids[@]} $!)
@@ -67,6 +87,21 @@ do
     ip_address=${tokens[1]}
 
     
-    scp "${machine}:~/${ip_address}_logs.zip" "./${folder_name}/"
+    ecode=1
+    while [ $ecode -ne 0 ]
+    do
+
+    
+        scp "${machine}:~/${ip_address}_logs.zip" "./${folder_name}/"
+        ecode=$?
+
+        if [ "$ecode" -ne 0 ]; 
+        then
+            echo -e "${RED}It will retry 10 seconds later.${NC}"
+            sleep 10
+        fi
+
+    done
+
 
 done

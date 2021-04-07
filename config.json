@@ -1,5 +1,5 @@
 {
-	"NodeCount": 486,
+	"NodeCount": 480,
 	"BAStar": {
 		"UserMoney": 1000,
 		"ThresholdProposer": 100,
@@ -16,7 +16,7 @@
 		"ID":1
 	},
 	"Blockchain": {
-		"StopOnRound": 18
+		"StopOnRound": 6
 	},
 	"Network": {
 		"GossipNodeMessageBufferSize": 100,
@@ -31,7 +31,7 @@
 		"EnableGossipNodeLoging": false
 	},
 	"Validation":{
-		"ValidateBlock": true,
+		"ValidateBlock": false,
 		"ValidateVote":	false
 	},
 	"Host":{

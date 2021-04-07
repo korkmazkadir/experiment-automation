@@ -3,12 +3,10 @@
 # Imports machines.sh
 source machines.sh
 
-# Imports tc rules
-source tc_rules.sh
-
-#imports retry function
-source retry.sh
-
+# Text color
+RED='\033[0;31m'
+LM='\e[95m'
+NC='\033[0m'
 
 
 # The first argument is the path of the config file
@@ -52,12 +50,24 @@ do
     IFS='.' read -ra tokens <<< "${ip_address}"
     host_name=${tokens[0]}
 
-    tcRules="tc_rules_${host_name}"
+    ecode=1
+    while [ $ecode -ne 0 ]
+    do
 
-    bash_v=$(readlink -f $(which sh))
-    echo "Bash version: ${bash_v}"
+        sed -e "s/\${1}/${registery_ip_address}/" -e "s/\${2}/${number_of_nodes}/" ./templates/template_deploy-nodes.sh | ssh -tt "${machine}" > /dev/null
+        
+        ecode=$?
 
-    retry sed -e "s/\${1}/${registery_ip_address}/" -e "s/\${2}/${number_of_nodes}/" ./templates/template_deploy-nodes.sh | ssh -tt "${machine}" > /dev/null
+        echo "Error code is ${ecode}"
+
+        if [ "$ecode" -ne 0 ]; 
+        then
+            echo -e "${RED}It will retry 10 seconds later.${NC}"
+            sleep 10
+        fi
+
+    done
+
 
 
 done
