@@ -27,22 +27,8 @@ do
 
     echo "==> Deleting experiment data on machine: ${machine}"
 
-    ecode=1
-    while [ $ecode -ne 0 ]
-    do
 
-
-        cat  ./templates/template_delete-experiment-data.sh | ssh -T "${machine}" > /dev/null
-
-        ecode=$?
-
-        if [ "$ecode" -ne 0 ]; 
-        then
-            echo -e "${RED}It will retry 10 seconds later.${NC}"
-            sleep 10
-        fi
-
-    done
+    cat  ./templates/template_delete-experiment-data.sh | ssh -T "${machine}" > /dev/null
 
 
 done
